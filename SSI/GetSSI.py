@@ -53,11 +53,13 @@ for tr in table.find_all("tr"):
             "url" : "http://www.dailyfx.com.hk/dailyfx.plus/plus.ssi/" + url
             , "date" : date_
         }
-for i in range(2,71):
+for i in range(2,1000):
     r = web.get("http://www.dailyfx.com.hk/dailyfx.plus/plus.ssi/index.php?list=1&pagenum=%s" % i, headers=headers, cookies=cookies)
     r.encoding = "utf-8"
     soup = BeautifulSoup(r.text, "html.parser")
     table = soup.find("table")
+    if table is None:
+        break
     for tr in table.find_all("tr"):
         td = tr.find("td")
         if td:
@@ -92,11 +94,15 @@ currencies_trans = {
     u"美元/人民币" : "USD/CNH",
     u"美元/离岸人民币" : "USD/CNH"
 }
+total_url = len(urls)
+done_url = 0.0
 for key, u in urls.items():
+    done_url += 1.0
+    done = done_url/total_url*100.0
     #if int(key) > 49278:
     #    continue
     #u = urls["49292"]
-    print u["url"]
+    print u["url"], "%.0f%%" % done
     r = web.get(u["url"], headers=headers, cookies=cookies)
     r.encoding = "utf-8"
     soup = BeautifulSoup(r.text, "html.parser")
